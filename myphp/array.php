@@ -8,18 +8,44 @@
 require_once 'function.php';
 
 $ary = array("Peter"=>"55","Ben"=>"57","Joe"=>"53");
-$ary1 = array("Peter"=>"55","Ben"=>"33","Dog"=>"53");
+$ary1 = array("Peter"=>"60","Ben"=>"33","Dog"=>"53");
 $ary2 = array(
     'Peter'=>array("Peter"=>"35","Ben"=>"37","Joe"=>"43"),
     'Ben'=>array("Peter"=>"25","Ben"=>"27","Dog"=>"23"),
     'Joe'=>array("Peter"=>"15","Ben"=>"17","Joe"=>"13")
+);
+$ary2 = array(
+    array("Peter"=>"35","Ben"=>"37","Joe"=>"43"),
+    array("Peter"=>"25","Ben"=>"27","Dog"=>"23"),
+    array("Peter"=>"15","Ben"=>"17","Joe"=>"13")
 );
 $key=array("Peter","Ben","Joe","A");
 $val=array("35","37","43","Ben");
 $num=array("1","2","3","4");
 $a=array("A","Cat","Dog","A","Dog");
 
+/**
+ * 将多个数组进行合并，没有键名的数组会进行拼接式组合，
+ */
+$result = array_merge_recursive($key,$val);
+dump();
 
+/**
+ * 将多个数组进行合并，没有键名的数组会进行拼接式组合，有相同键名的后面的键值会覆盖前面的进行合并
+ * array_merge(array1,array2,array3...);
+ * array1：数组
+ * php：4+
+ */
+$result = array_merge($ary2,$ary2);
+dump();
+
+/**
+ * 将方法作用于每个键值上，并且返回新的值
+ * array_map(myfunction,array1,array2,array3...);
+ * myfunction：自定义方法。可以使用“function_name”这种写法
+ * array1：数组
+ * php：4.0.6+
+ */
 $result = array_map(function($v){
     return $v*$v;
 },$num);
