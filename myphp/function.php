@@ -32,6 +32,22 @@ function ary_dx($data,$type=0){
     }
 }
 
+/**
+ * 可选择式传参
+ */
+function uncertainParam() {
+    $numargs = func_num_args();    //获得传入的所有参数的个数
+    echo "参数个数: $numargs\n";
+    $args = func_get_args();       //获得传入的所有参数的数组
+    var_dump($args);
+    foreach($args as $key=>$value){
+        //echo '<BR><BR>'.func_get_arg($key);   //获取单个参数的值
+        echo '<BR>'.$value;        //单个参数的值
+    }
+    //var_export($args);
+}
+
+
 
 
 

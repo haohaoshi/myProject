@@ -24,10 +24,16 @@ $val=array("35","37","43","Ben");
 $num=array("1","2","3","4");
 $a=array("A","Cat","Dog","A","Dog");
 
+
+$result =
+
 /**
- * 将多个数组进行合并，没有键名的数组会进行拼接式组合，
+ * 将多个数组进行合并，没有键名的数组会进行拼接式组合，有相同的键名会以递归的形式进行组合
+ * array_merge_recursive(array1,array2,array3...);
+ * array1：数组
+ * php：4.0.1+
  */
-$result = array_merge_recursive($key,$val);
+$result = array_merge_recursive($ary,$ary1);
 dump();
 
 /**
