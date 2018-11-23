@@ -4,12 +4,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Name
+    | Application Name 应用程序名称
     |--------------------------------------------------------------------------
     |
-    | This value is the name of your application. This value is used when the
-    | framework needs to place the application's name in a notification or
-    | any other location as required by the application or its packages.
+    | This value is the name of your application. This value is used when the framework needs to place the application's name in a notification or any other location as required by the application or its packages.
+    此值是应用程序的名称，当框架需要将应用程序的名称放入通知或应用程序或其包所需的任何其他位置时，将使用此值
     |
     */
 
@@ -17,7 +16,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Environment
+    | Application Environment 应用环境
     |--------------------------------------------------------------------------
     |
     | This value determines the "environment" your application is currently
@@ -56,7 +55,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Timezone
+    | Application Timezone 时区
     |--------------------------------------------------------------------------
     |
     | Here you may specify the default timezone for your application, which
@@ -69,7 +68,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Locale Configuration
+    | Application Locale Configuration 应用程序语言环境配置
     |--------------------------------------------------------------------------
     |
     | The application locale determines the default locale that will be used
@@ -82,7 +81,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Fallback Locale
+    | Application Fallback Locale 应用应变语言环境
     |--------------------------------------------------------------------------
     |
     | The fallback locale determines the locale to use when the current one
@@ -95,7 +94,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Encryption Key
+    | Encryption Key 加密密钥
     |--------------------------------------------------------------------------
     |
     | This key is used by the Illuminate encrypter service and should be set
@@ -110,7 +109,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
+    | Autoloaded Service Providers 自动装载服务
     |--------------------------------------------------------------------------
     |
     | The service providers listed here will be automatically loaded on the
@@ -164,7 +163,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Class Aliases
+    | Class Aliases 类别名
     |--------------------------------------------------------------------------
     |
     | This array of class aliases will be registered when this application
