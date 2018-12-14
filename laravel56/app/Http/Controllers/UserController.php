@@ -7,23 +7,21 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index($data){
-        echo 'index:'.$data;
+    /**/
+    public function index(){
+        //log_ljz(111);
+        //return view('index.index');
+        $res = $this->middleware('UserToken')->except('info');
+        dump($res);
     }
-    public function test(){
-        echo 'test:';
+    public function login(){
+        return view('index.login');
     }
     public function show()
     {
         echo 'show:';
         //var_dump(User::findOrFail($id));
         //return view('welcome');
-    }
-    public function login(){
-        //echo '<pre>';
-        //var_dump(config());
-        //echo 'login';
-        return view('login.login');
     }
 
 }

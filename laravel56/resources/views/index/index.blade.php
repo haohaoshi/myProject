@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+    <link href="{{HTML_URL}}css/index/bootstrap.min.css" rel="stylesheet">
+
+    <link href="{{HTML_URL}}css/index/bootstrap-theme.min.css" rel="stylesheet" media="screen">
 
     <!-- Bootstrap Admin Theme -->
-    <link href="css/bootstrap-admin-theme.css" rel="stylesheet" media="screen">
+    <link href="{{HTML_URL}}css/index/bootstrap-admin-theme.css" rel="stylesheet" media="screen">
+
 
     <!-- Vendors -->
     <link href="vendors/easypiechart/jquery.easy-pie-chart.css" rel="stylesheet" media="screen">
@@ -18,8 +20,8 @@
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="js/html5shiv.js"></script>
-    <script type="text/javascript" src="js/respond.min.js"></script>
+    <script type="text/javascript" src="{{HTML_URL}}js/index/html5shiv.js"></script>
+    <script type="text/javascript" src="{{HTML_URL}}js/index/respond.min.js"></script>
     <![endif]-->
 </head>
 <body class="bootstrap-admin-with-small-navbar">
@@ -451,15 +453,15 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
-<script type="text/javascript" src="vendors/easypiechart/jquery.easy-pie-chart.js"></script>
+<script type="text/javascript" src="{{HTML_URL}}js/index/bootstrap.min.js"></script>
+<script type="text/javascript" src="{{HTML_URL}}js/index/twitter-bootstrap-hover-dropdown.min.js"></script>
+{{--<script type="text/javascript" src="vendors/easypiechart/jquery.easy-pie-chart.js"></script>--}}
 
-<script type="text/javascript">
+{{--<script type="text/javascript">
     $(function () {
         // Easy pie charts
         $('.easyPieChart').easyPieChart({animate: 1000});
     });
-</script>
+</script>--}}
 </body>
 </html>
