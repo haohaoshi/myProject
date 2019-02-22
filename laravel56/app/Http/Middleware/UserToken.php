@@ -11,7 +11,20 @@ namespace App\Http\Middleware;
 
 class UserToken
 {
-    public function info(){
-        return array('name'=>'li','age'=>'23');
+    /**
+     * 处理输入请求
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        //var_dump($request->route()->named());
+        if ($request->route()->named('profile')) {
+
+        }
+
+        return $next($request);
     }
 }

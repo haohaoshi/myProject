@@ -13,18 +13,19 @@ class CheckToken
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next )
     {
-        //$response = $next($request);
-        //var_dump($response);die;
-
+        //先执行判断，再执行路由
+        //echo $str;
         if($request->input('token') != 'key123'){
-            return redirect()->to('http://localhost/github/laravel56/server.php/user/login');
+            return redirect()->to('http://localhost/github/laravel56/server.php');
         }
         return $next($request);
 
-
+        //先执行路由，再执行判断
+        /*$response = $next($request);
+        echo 222;
         // 执行动作
-        //return $response;
+        return $response;*/
     }
 }
