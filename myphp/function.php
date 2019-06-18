@@ -6,6 +6,26 @@
  * Time: 13:25
  */
 
+//开启报错提示
+ini_set("display_errors","on");
+error_reporting(E_ALL | E_STRICT);
+
+//设置编码
+header("Content-Type:text/html;charset=utf-8");
+
+//跨域问题（允许所有域名）
+header('Access-Control-Allow-Origin:*');
+
+//跨域问题（指定域名）
+$origin = isset($_SERVER['HTTP_ORIGIN'])? $_SERVER['HTTP_ORIGIN'] : '';
+$allow_origin = array(
+    'http://cms.cloud.cnfol.com',
+    'http://cloud.3g.cnfol.com'
+);
+if(in_array($origin, $allow_origin)){
+    header('Access-Control-Allow-Origin:'.$origin);
+}
+
 $result = '';
 /**
  * 格式化输出
@@ -29,6 +49,93 @@ function log_ljz($data,$file_name='log_ljz')
     $log .= "文件所在位置：".$res[0]['file'].",位于第".$res[0]['line']."行\n";
     $log .= $data."\n\n";
     file_put_contents($file,$log,FILE_APPEND|LOCK_EX);
+}
+
+/**
+ * curl  get
+ * @param $url
+ * @param int $time  超时时间
+ * @return mixed
+ */
+function curl_get($url,$time=15){
+    $ip = array('220.138.60.40','183.60.15.173','120.43.72.20','112.110.20.11','140.50.112.58','128.110.90.23','140.28.100.40','120.58.60.74','200.57.20.114','89.110.11.2','10.57.112.2','10.58.112.3','113.10.21.5');
+    $rand = $ip[rand(0,count($ip)-1)];
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $time); //设置超时时间
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//获取内容后，true保存变量形式，false直接输出
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//是否验证证书
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); //是否抓取跳转后的页面
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.47 Safari/536.11");//模拟浏览器
+    curl_setopt($ch, CURLOPT_HTTPHEADER , array("CLIENT-IP:{$rand}","X-FORWARDED-FOR:{$rand}"));//模拟ip
+    curl_setopt($ch, CURLOPT_ENCODING, "");//忽略页面格式  如gzip
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+}
+
+/**
+ * 表格信息 转换数组
+ * @param $table
+ * @return mixed
+ */
+function TabToArr($table){
+    $table = preg_replace("'<tr[^>]*?>'si","",$table);
+    $table = preg_replace("'<td[^>]*?>'si","",$table);
+    $table = preg_replace("'<th[^>]*?>'si","",$table);
+    $table = str_replace("</tr>","{tr}",$table);
+    $table = str_replace("</td>","{td}",$table);
+    $table = str_replace("</th>","",$table);
+    $table = preg_replace("'<[/!]*?[^<>]*?>'si","",$table);
+    $table = preg_replace("'([rn])[s]+'","",$table);
+    $table = str_replace(" ","",$table);
+    $table = preg_replace("'[\s]'si","",$table);
+    $table = explode('{tr}', $table);
+    array_pop($table);//删除最后一个
+    array_shift($table);//删除第一个
+    $td_array = array();
+    foreach ($table as $key=>$tr) {
+        $tr =trim($tr);
+        $tr = str_replace(chr(10),'',$tr); //去掉换行
+        $td = explode('{td}', $tr);
+        array_pop($td);
+        $td_array[] = $td;
+    }
+    return $td_array;
+}
+
+/**
+ * curl POST
+ * @param   string  url
+ * @param   array   数据
+ * @param   int     请求超时时间
+ * @param   bool    HTTPS时是否进行严格认证
+ * @return  string
+ */
+function curlPost($url, $data = array(), $timeout = 30, $CA = true){
+    $cacert = getcwd() . '/cacert.pem'; //CA根证书
+    $SSL = substr($url, 0, 8) == "https://" ? true : false;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout-2);
+    if ($SSL && $CA) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);   // 只信任CA颁布的证书
+        curl_setopt($ch, CURLOPT_CAINFO, $cacert); // CA根证书（用来验证的网站证书是否是CA颁布）
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); // 检查证书中是否设置域名，并且是否与提供的主机名匹配
+    } else if ($SSL && !$CA) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 信任任何证书
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // 检查证书中是否设置域名
+    }
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); //避免data数据过长问题
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); //data with URLEncode
+    $ret = curl_exec($ch);
+    var_dump(curl_error($ch));  //查看报错信息
+    curl_close($ch);
+    return $ret;
 }
 
 /**
@@ -363,6 +470,70 @@ function unlock_url($txt,$key='www.jb51.net')
     return trim(base64_decode($tmp),$key);
 }
 
+
+/*
+$array:需要排序的数组
+$keys:需要根据某个key排序
+$sort:倒叙还是顺序
+*/
+function arraySort($array,$keys,$sort='asc') {
+    $newArr = $valArr = array();
+    foreach ($array as $key=>$value) {
+        $valArr[$key] = $value[$keys];
+    }
+    ($sort == 'asc') ?  asort($valArr) : arsort($valArr);//先利用keys对数组排序，目的是把目标数组的key排好序
+    reset($valArr); //指针指向数组第一个值
+    foreach($valArr as $key=>$value) {
+        $newArr[$key] = $array[$key];
+    }
+    return $newArr;
+}
+
+/**
+2015-09-07 模拟get 获取URl 设置超时时间 默认5秒
+$url 要访问的地址
+$type 访问类型 0 curl, 1 get ,2出现gzip情况 默认 0
+$time 超时时间 默认 5秒
+ */
+function curl_get_contents($url,$type=0,$time=5) {
+    if($type == 1){
+        $ctx = stream_context_create(array(
+                'http' => array(
+                    'timeout' => $time //设置一个超时时间，单位为秒
+                ),
+                "ssl"=>array(
+                    "verify_peer"=>false,
+                    "verify_peer_name"=>false,
+                )
+            )
+        );
+        $data = file_get_contents($url, 0, $ctx);
+    }elseif($type == 2){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $time); //设置超时时间
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); //是否抓取跳转后的页面
+        curl_setopt($ch, CURLOPT_ENCODING, "gzip,deflate");//处理页面压缩
+        $data = curl_exec($ch);
+        //报错信息
+        /* if (curl_errno($ch)) { echo 'Curl error: ' . curl_error($ch); }*/
+        curl_close($ch);
+    }else{
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $time); //设置超时时间
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); //是否抓取跳转后的页面
+        $data = curl_exec($ch);
+        //报错信息
+        /* if (curl_errno($ch)) { echo 'Curl error: ' . curl_error($ch); }*/
+        curl_close($ch);
+    }
+    return $data;
+}
 
 
 
