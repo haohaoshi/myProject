@@ -2,3 +2,5 @@
 composer.lock
 *.log
 thinkphp
+!thinkphp/base.php
+!thinkphp/library/Config.php
