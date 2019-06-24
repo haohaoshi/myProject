@@ -1,0 +1,3 @@
+traits/*
+think/*
+!think/Config.php

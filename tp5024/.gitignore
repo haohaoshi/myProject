@@ -1,6 +1,5 @@
 .idea
 composer.lock
 *.log
-thinkphp
+thinkphp/*
 !thinkphp/base.php
-!thinkphp/library/Config.php
