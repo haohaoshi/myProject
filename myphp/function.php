@@ -37,6 +37,23 @@ function dump(){
     die;
 }
 
+/**
+ * 返回16位md5值
+ **/
+function md5To16($str){
+    return substr(md5($str), 8, 16);
+}
+
+/**
+ * //清空特殊空格为正常空格
+ * @param $str
+ * @return null|string|string[]
+ */
+function strim($str){
+    $str = preg_replace('/(\s|\&nbsp\;|　|\xc2\xa0)/',' ',$str);
+    return $str;
+}
+
 
 //日志输出
 function log_ljz($data,$file_name='log_ljz')
@@ -49,6 +66,21 @@ function log_ljz($data,$file_name='log_ljz')
     $log .= "文件所在位置：".$res[0]['file'].",位于第".$res[0]['line']."行\n";
     $log .= $data."\n\n";
     file_put_contents($file,$log,FILE_APPEND|LOCK_EX);
+}
+//日志
+function datalog($data='',$errtype='1',$filename='errlog',$filepath='charge'){
+    $filepath=RUNTIME_PATH.$filepath;
+    if(!is_dir($filepath)){
+        mkdir($filepath,0777,true);
+    }
+    $myfile=fopen($filepath.'/'.$filename.date('Y-m-d').'.log', 'a');
+    $string="";
+    $string.='[TIME]：'.date('Y-m-d H:i:s')."\r\n";
+    if(is_array($data))$string.='[DATA]：'.var_export($data,true)."\r\n";
+    if(is_string($data))$string.='[DATA]：'.$data."\r\n";
+    if($errtype)$string.='-------------------------------------'."\r\n";
+    fwrite($myfile,$string);
+    fclose($myfile);
 }
 
 /**
@@ -431,10 +463,10 @@ function timeStr($the_time) {
 }
 
 //加密函数
-function lock_url($txt,$key='www.jb51.net')
+function lock_url($txt='',$key='md5')
 {
-    $txt = $txt.$key;
-    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    if(!$txt)return $txt;
+    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-=+";
     $nh = rand(0,64);
     $ch = $chars[$nh];
     $mdKey = md5($key.$ch);
@@ -447,13 +479,14 @@ function lock_url($txt,$key='www.jb51.net')
         $j = ($nh+strpos($chars,$txt[$i])+ord($mdKey[$k++]))%64;
         $tmp .= $chars[$j];
     }
-    return urlencode(base64_encode($ch.$tmp));
+    return urlencode($ch.$tmp);
 }
 //解密函数
-function unlock_url($txt,$key='www.jb51.net')
+function unlock_url($txt='',$key='md5')
 {
-    $txt = base64_decode(urldecode($txt));
-    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    if(!$txt)return $txt;
+    $txt = urldecode($txt);
+    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-=+";
     $ch = $txt[0];
     $nh = strpos($chars,$ch);
     $mdKey = md5($key.$ch);
@@ -467,7 +500,7 @@ function unlock_url($txt,$key='www.jb51.net')
         while ($j<0) $j+=64;
         $tmp .= $chars[$j];
     }
-    return trim(base64_decode($tmp),$key);
+    return base64_decode($tmp);
 }
 
 

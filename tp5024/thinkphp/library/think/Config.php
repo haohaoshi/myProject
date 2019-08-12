@@ -222,7 +222,11 @@ class Config
         $file = scandir($dir);//获取目录下的所有文件
         foreach($file as $k=>$v){
             if((strpos($v,'.')!==false||strpos($v,'..')!==false)&&!strpos($v,'.php'))continue;
-            $name = str_replace('.php','',$v);//配置名（如设置即表示二级配置）
+            if(strpos($v,'config')===false){//默认config配置为最外层
+                $name = str_replace('.php','',$v);//配置名（如设置即表示二级配置）
+            }else{
+                $name = '';
+            }
             self::load($dir.$v,$name,$range);
         }
     }

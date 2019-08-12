@@ -6,27 +6,25 @@ use think\Config;
 
 class Index extends Base
 {
-    public function index()
+    public function index($name,$id=0)
     {
         //Config::load(ROOT_PATH.'config/app.php');
         //Config::parse(ROOT_PATH.'config/');
         //Config::selfLoad(ROOT_PATH.'config/','','config');
-        dump(Config::get());
+        //dump(Config::get());
+        //dump(APP_TEST);
+        dump($name);
+        dump($id);
 
         //return view('index/index');
     }
+    public function dit(){
+
+    }
     public function test(){
-        $str = '<li><a href="http://roadshow.cnfol.com/show/13637"   target="_blank"><img 
-src="http://images.cnfol.com/file/201407/cl_201407210845038313.jpg" alt="陈龙">陈龙<br><em class="ToBlue">13日09：30</em></a>
-<li><a href="http://roadshow.cnfol.com/show/13638" target="_blank"><img 
-src="http://images.cnfol.com/file/201505/1_201505081616455402.jpg" alt="李杰涛">Michael<br><em class="ToBlue">13日15：00</em></a>
-<li><a href="http://roadshow.cnfol.com/show/13639" target="_blank"><img 
-src="http://images.cnfol.com/file/201507/1_201507241501277111.jpg" alt="斯晨怡">斯晨怡<br><em class="ToBlue">13日20：00</em></a></li>';
-
-        preg_match_all('/<a href="(.*)"[^>]*>.*src="(.*)"[^>]*>(.*)<br><em[^>]*>(.*)<\/em>/isU',$str,$res);
+        $ary = ['img'=>'<img src="http://cms.3gcloud.cnfol.com/uploads/e09004a4930c51c68526b8c4d2cc3fa9.jpg"/>'];
+        $url = 'http://collect.cms.cnfol.com/index.php/manager/api/uploadHtmlImg';
+        $res = curlPost($url,$ary);
         dump($res);
-
-        preg_match('/<a href="(.*)"[^>]*>/is',$str,$res);
-        //dump($res);
     }
 }

@@ -65,4 +65,4 @@ if (is_file(ROOT_PATH . '.env')) {
 \think\Config::set(include THINK_PATH . 'convention' . EXT);
 
 // 自动加载对应目录的配置文件
-\think\Config::selfLoad(ROOT_PATH . 'config/');
+//\think\Config::selfLoad(ROOT_PATH . 'config/');

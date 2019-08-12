@@ -95,12 +95,12 @@ return [
     // 是否开启路由解析缓存
     'route_check_cache'      => false,
     // 是否强制使用路由
-    'url_route_must'         => false,
+    'url_route_must'         => true,
     // 域名部署
     'url_domain_deploy'      => false,
     // 域名根，如thinkphp.cn
     'url_domain_root'        => '',
-    // 是否自动转换URL中的控制器和操作名
+    // 是否自动转换URL中的控制器和操作名  大小写转换
     'url_convert'            => true,
     // 默认的访问控制器层
     'url_controller_layer'   => 'controller',
