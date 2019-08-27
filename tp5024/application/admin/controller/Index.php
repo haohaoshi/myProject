@@ -6,17 +6,17 @@ use think\Config;
 
 class Index extends Base
 {
-    public function index($name,$id=0)
+    public function index($name='null',$id=0)
     {
         //Config::load(ROOT_PATH.'config/app.php');
         //Config::parse(ROOT_PATH.'config/');
         //Config::selfLoad(ROOT_PATH.'config/','','config');
         //dump(Config::get());
         //dump(APP_TEST);
-        dump($name);
-        dump($id);
+//        dump($name);
+//        dump($id);
 
-        //return view('index/index');
+        return view('index/index');
     }
     public function dit(){
 

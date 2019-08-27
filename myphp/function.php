@@ -54,6 +54,22 @@ function strim($str){
     return $str;
 }
 
+/**
+ * 返回json结构,并支持ajax跨域
+ *
+ * @param array  $data 数据
+ * @param string $call 匿名函数
+ * @return json
+ */
+function returnJson($data = array(), $call = '')
+{
+    if(empty($call)){
+        exit(json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
+    } else {
+        exit($call.'('.json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE).')');
+    }
+
+}
 
 //日志输出
 function log_ljz($data,$file_name='log_ljz')
@@ -165,7 +181,7 @@ function curlPost($url, $data = array(), $timeout = 30, $CA = true){
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); //data with URLEncode
     $ret = curl_exec($ch);
-    var_dump(curl_error($ch));  //查看报错信息
+    //var_dump(curl_error($ch));  //查看报错信息
     curl_close($ch);
     return $ret;
 }
@@ -359,6 +375,27 @@ function _curl($url, $param = array(), $type = 'post', $dataType = '', $timeout 
     // 如果请求的数据类型是json 自动转义
     return (strtolower($dataType) == 'json')? json_decode($result, true) : $result;
 }
+
+/**
+ * 使用file_get_contents  post请求
+ * @param $url
+ * @param $post_data
+ * @return bool|string
+ */
+function send_post($url,$post_data) {
+    $postdata = http_build_query($post_data);
+    $options = array(
+        'http' => array(
+            'method' => 'POST',//注意要大写
+            'header' => 'Content-type:application/x-www-form-urlencoded',
+            'content' => $postdata
+        )
+    );
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    return $result;
+}
+
 
 /**
  * @param string $url 跳转地址
