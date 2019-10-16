@@ -6,14 +6,14 @@
  * Time: 16:56
  */
 
-namespace app\admin\controller;
+namespace app\common\controller;
 
 
 use think\Controller;
 
 class Base extends Controller
 {
-    public function __construct()
+    public function _initialize()
     {
 
     }

@@ -1,11 +1,20 @@
 <?php
 namespace app\admin\controller;
 
-
+use app\admin\model;
+use app\common\controller\Base;
 use think\Config;
+//use think\Model;
 
 class Index extends Base
 {
+    public $model;
+    public function _initialize()
+    {
+        //$this->model = model('index');
+        $this->model = new model\IndexModel();
+    }
+
     public function index($name='null',$id=0)
     {
         //Config::load(ROOT_PATH.'config/app.php');
@@ -15,16 +24,16 @@ class Index extends Base
         //dump(APP_TEST);
 //        dump($name);
 //        dump($id);
+        $data = array();
 
+        //$this->assign('data',$data);
         return view('index/index');
     }
-    public function dit(){
-
+    public function details(){
+        return view('index/details');
     }
     public function test(){
-        $ary = ['img'=>'<img src="http://cms.3gcloud.cnfol.com/uploads/e09004a4930c51c68526b8c4d2cc3fa9.jpg"/>'];
-        $url = 'http://collect.cms.cnfol.com/index.php/manager/api/uploadHtmlImg';
-        $res = curlPost($url,$ary);
-        dump($res);
+        $res = $this->model->getList();
+        dump(\config());
     }
 }

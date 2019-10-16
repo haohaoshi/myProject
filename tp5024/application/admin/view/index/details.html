@@ -1,0 +1,13 @@
+{extend name="common@body" /}
+{block name="title"}详情{/block}
+{block name="style"}{/block}
+{block name="body"}
+
+
+
+<div class="container-fluid">
+{:widget('common/form/form',[[widget('common/form/input',['编号','id']),widget('common/form/input',['名称','name']),widget('common/form/input',['类型','type']),widget('common/form/input',['状态','status'])]])}
+</div>
+
+{/block}
+{block name="script"}{/block}

@@ -1,21 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>index</title>
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-
-    {load href="public/static/js/jquery-3.3.1.min.js"}
-    {load href="public/static/bts/css/bootstrap.min.css"}
-    {load href="public/static/bts/js/bootstrap.min.js"}
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <style>
-        .fontSize{
-            font-size: 23px;
-        }
-    </style>
-</head>
-<body>
+{extend name="common@body" /}
+{block name="title"}登陆{/block}
+{block name="style"}
+<style>
+    .fontSize{
+        font-size: 23px;
+    }
+</style>
+{/block}
+{block name="body"}
 <div class="row">
     <div class="col-xs-3"></div>
     <div class="col-xs-6">
@@ -30,12 +22,9 @@
                 </div>
             </div>
 
-
-
             <button type="submit" class="btn btn-primary">确定</button>
         </form>
     </div>
     <div class="col-xs-3"></div>
 </div>
-</body>
-</html>
+{/block}

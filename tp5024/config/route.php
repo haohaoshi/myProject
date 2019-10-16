@@ -17,7 +17,8 @@ return [
         ':id'   => ['index/hello', ['method' => 'get'], ['id' => '\d+']],
         ':name' => ['index/hello', ['method' => 'post']],
     ],
-    'admin/[:name]/[:id]' =>  ['admin/index/index', ['method' => 'get'], ['name'=>'[a-zA-Z]*','id' => '\d+']],
+    //'admin/index/[:name]/[:id]' =>  ['admin/index/index', ['method' => 'get'], ['name'=>'[a-zA-Z]*','id' => '\d+']],
+    //'admin/test' =>  ['admin/index/test', ['method' => 'get'], ['name'=>'[a-zA-Z]*','id' => '\d+']],
 /*    'index-<name>-<id?>' =>  ['admin/index/index', ['method' => 'get'], ['name'=>'[a-zA-Z]*','id' => '\d+']],*/
 
 ];

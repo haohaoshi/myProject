@@ -72,7 +72,7 @@ function returnJson($data = array(), $call = '')
 }
 
 //日志输出
-function log_ljz($data,$file_name='log_ljz')
+function log_test($data,$file_name='log_test')
 {
     if(is_array($data))$data = var_export($data,true);
     $file=dirname(__FILE__)."/{$file_name}.log";
@@ -84,7 +84,7 @@ function log_ljz($data,$file_name='log_ljz')
     file_put_contents($file,$log,FILE_APPEND|LOCK_EX);
 }
 //日志
-function datalog($data='',$errtype='1',$filename='errlog',$filepath='charge'){
+function datalog($data='',$errtype='1',$filename='errlog',$filepath='datalog'){
     $filepath=RUNTIME_PATH.$filepath;
     if(!is_dir($filepath)){
         mkdir($filepath,0777,true);
@@ -307,42 +307,7 @@ function ip_address($type = 0)
 
     return $ip[$type];
 }
-//获取https内容
-function curl_gets($url,$referer = '',$ishttp=1)
-{
-    $ip = array('220.138.60.40','183.60.15.173','120.43.72.20','112.110.20.11','140.50.112.58','128.110.90.23','140.28.100.40','120.58.60.74','200.57.20.114','89.110.11.2','10.57.112.2','10.58.112.3','113.10.21.5');
 
-    $rand = $ip[rand(0,count($ip)-1)];
-    $curl = curl_init();
-
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-    //$cookie = 'JSESSIONID=1ABA8CECECD54692F54FB6C1E6CE8344';
-    //curl_setopt ($curl, CURLOPT_COOKIE , $cookie);
-    if($ishttp == 1)
-    {
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); //不验证证书
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false); //不验证证书
-        curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
-    }
-    curl_setopt($curl, CURLOPT_HTTPHEADER , array(
-        "CLIENT-IP:{$rand}",
-        "X-FORWARDED-FOR:{$rand}"));
-    curl_setopt($curl,CURLOPT_USERAGENT,"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36");
-    //$referer ? curl_setopt($curl, CURLOPT_REFERER, $referer) : '';
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-    $result['data'] = curl_exec($curl);
-    if(curl_errno($curl))
-    {
-        echo 'Curl error: ' . curl_error($curl);
-    }
-    $result['code'] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    curl_close($curl);
-
-    return $result;
-}
 /**
  * 执行curl
  *
@@ -605,6 +570,17 @@ function curl_get_contents($url,$type=0,$time=5) {
     return $data;
 }
 
+/**
+ * 获取当前请求的完整url
+ * @return string
+ */
+function get_url() {
+    $sys_protocal = isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://';
+    $php_self = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
+    $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+    $relate_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $php_self.(isset($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : $path_info);
+    return $sys_protocal.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '').$relate_url;
+}
 
 
 

@@ -5,7 +5,7 @@
  * Date: 2019\6\21 0021
  * Time: 16:02
  */
-define('APP_TEST','app_test');
+define('HOME_URL','http://myphp.com/');
 return [
     'test' => 'test',
     'ary' => [
