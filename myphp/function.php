@@ -5,6 +5,8 @@
  * Date: 2018\10\16 0016
  * Time: 13:25
  */
+//设置超时时间
+set_time_limit(0);
 
 //开启报错提示
 ini_set("display_errors","on");
@@ -117,6 +119,31 @@ function curl_get($url,$time=15){
     curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.47 Safari/536.11");//模拟浏览器
     curl_setopt($ch, CURLOPT_HTTPHEADER , array("CLIENT-IP:{$rand}","X-FORWARDED-FOR:{$rand}"));//模拟ip
     curl_setopt($ch, CURLOPT_ENCODING, "");//忽略页面格式  如gzip
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+}
+
+/**
+ * curl  post
+ * @param $url
+ * @param int $time  超时时间
+ * @return mixed
+ */
+function curl_post($url,$param,$time=15){
+    $ip = array('220.138.60.40','183.60.15.173','120.43.72.20','112.110.20.11','140.50.112.58','128.110.90.23','140.28.100.40','120.58.60.74','200.57.20.114','89.110.11.2','10.57.112.2','10.58.112.3','113.10.21.5');
+    $rand = $ip[rand(0,count($ip)-1)];
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $time); //设置超时时间
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//获取内容后，true保存变量形式，false直接输出
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//是否验证证书
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); //是否抓取跳转后的页面
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.47 Safari/536.11");//模拟浏览器
+    curl_setopt($ch, CURLOPT_HTTPHEADER , array("CLIENT-IP:{$rand}","X-FORWARDED-FOR:{$rand}"));//模拟ip
+    curl_setopt($ch, CURLOPT_ENCODING, "");//忽略页面格式  如gzip
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
     $data = curl_exec($ch);
     curl_close($ch);
     return $data;
@@ -580,6 +607,106 @@ function get_url() {
     $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
     $relate_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $php_self.(isset($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : $path_info);
     return $sys_protocal.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '').$relate_url;
+}
+
+/**
+ *
+ * 安全过滤函数,主要用于防范sql注入
+ *
+ * @param  mixed   $string 字符串/数组
+ * @param  integer $force  强制进行过滤
+ * @param  boolean $strip  是否需要去除反转义符号
+ * @return mixed
+ */
+function cnfol_addslashes($string, $force = 1, $strip = FALSE)
+{
+    /* 如果是表单则需要判断MAGIC_QUOTES_GPC状态 */
+    !defined('MAGIC_QUOTES_GPC') && define('MAGIC_QUOTES_GPC', get_magic_quotes_gpc());
+    if(@!MAGIC_QUOTES_GPC || $force)
+    {
+        if(is_array($string))
+        {
+            foreach($string as $key => $val)
+            {
+                $string[$key] = cnfol_addslashes($val, $force, $strip);
+            }
+        }
+        else
+        {
+            $string = addslashes($strip ? stripslashes($string) : $string);
+        }
+    }
+    $string = filter_sql($string);
+    $string = filter_str($string);
+    $string = filter_html($string);
+
+    return $string;
+}
+
+/**
+ * 安全过滤函数2,过滤html、进制代码
+ *
+ * @param  mixed $string 需要过滤的数据
+ * @param  mixed $flags  是否使用PHP自带函数
+ * @return mixed
+ */
+function filter_html($string, $flags = NULL)
+{
+    if(is_array($string))
+    {
+        foreach($string as $key => $val)
+            $string[$key] = filter_html($val, $flags);
+    }
+    else
+    {
+        if($flags === NULL)
+        {
+            $string = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $string);
+            if(strpos($string, '&amp;#') !== FALSE)
+                $string = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4}));)/', '&\\1', $string);
+        }
+        else
+        {
+            if(PHP_VERSION < '5.4.0')
+                $string = htmlspecialchars($string, $flags);
+            else
+                $string = htmlspecialchars($string, $flags, 'UTF-8');
+        }
+    }
+    return $string;
+}
+
+/**
+ * 安全过滤函数3,数据加下划线防止SQL注入
+ *
+ * @param  string $value 需要过滤的值
+ * @return string
+ */
+function filter_sql($value)
+{
+    /*可能会被转移selectsselecteselectlselecteselectcselecttselect这个字符串照样可以输出select*/
+    $sql = array("select", 'insert', "update", "delete", "\'", "\/\*",
+        "\.\.\/", "\.\/", "union", "into", "load_file", "outfile");
+    $sql_re = array("","","","","","","","","","","","");
+
+    return str_replace($sql, $sql_re, $value);
+}
+
+/**
+ * 安全过滤函数4,过滤特殊有危害字符
+ *
+ * @param string $value 需要过滤的数据
+ * @return string
+ */
+function filter_str($value)
+{
+    $value = str_replace(array("\0","%00","\r"), '', $value);
+    $value = preg_replace(array('/[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]/','/&(?!(#[0-9]+|[a-z]+);)/is'), array('', '&amp;'), $value);
+    $value = str_replace(array("%3C",'<'), '&lt;', $value);
+    $value = str_replace(array("%3E",'>'), '&gt;', $value);
+    $value = str_replace(array('"',"'","\t",'  '), array('&quot;','&#39;','    ','&nbsp;&nbsp;'), $value);
+
+    return $value;
 }
 
 
