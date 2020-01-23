@@ -1,5 +1,0 @@
-.idea
-composer.lock
-*.log
-thinkphp/*
-!thinkphp/base.php

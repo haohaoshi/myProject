@@ -13,10 +13,11 @@
     <div class="login-main">
         <div class="layui-elip">YZNCMS管理系统&nbsp;<span class="version">v1.0.0</span></div>
         {:widget('common/submit/form',[
-            [widget('common/submit/input',['账号','username']),
-            widget('common/submit/input',['密码','password']),
-            ],
-            url()
+            [
+                widget('common/submit/input',['账号','username']),
+                widget('common/submit/input',['密码','password']),
+                widget('common/submit/captcha',['验证码','verify'])
+            ]
         ])}
     </div>
 </div>
@@ -27,12 +28,29 @@
         var form = layui.form,
             layer = layui.layer,
             $ = layui.jquery;
+
+        //自定义验证规则
+        form.verify({
+            username: function(value){
+                if(value.length < 5){
+                    return '标题至少得5个字符啊';
+                }
+            }
+            ,password: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ]
+        });
+
+
         //登录
         form.on("submit(login)", function(data) {
             var action = $(data.form).attr('action');
+            console.log(action);
+            console.log($(data.form).serialize());
             $.post(action, $(data.form).serialize(), success, "json");
-            return false;
-
+            //$.post(action, {username:'xiaomin','password':'123456','verify':'1'}, success, "json");
+            //return false;
             function success(data) {
                 if (data.code) {
                     layer.msg('登入成功', {
@@ -49,6 +67,8 @@
                 }
             }
         });
+
+
 
         //表单输入效果
         $(".login-main .input-item").click(function(e) {
@@ -68,9 +88,9 @@
         });
 
         //刷新验证码
-        $("#verify").click(function() {
-            var verifyimg = $("#verify").attr("src");
-            $("#verify").attr("src", verifyimg.replace(/\?.*$/, '') + '?' + Math.random());
+        $("#verify_img").click(function() {
+            var verifyimg = $("#verify_img").attr("src");
+            $("#verify_img").attr("src", verifyimg.replace(/\?.*$/, '') + '?' + Math.random());
         });
     })
 </script>

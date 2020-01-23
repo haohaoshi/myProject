@@ -8,6 +8,9 @@
 //设置超时时间
 set_time_limit(0);
 
+//设置内存大小
+ini_set("memory_limit","32kb");
+
 //开启报错提示
 ini_set("display_errors","on");
 error_reporting(E_ALL | E_STRICT);
@@ -36,7 +39,7 @@ $result = '';
 function dump(){
     echo "<pre>";
     var_dump($GLOBALS['result']);
-    die;
+    //die;
 }
 
 /**
@@ -552,12 +555,12 @@ function arraySort($array,$keys,$sort='asc') {
 }
 
 /**
-2015-09-07 模拟get 获取URl 设置超时时间 默认5秒
+2019-12-18 模拟get 获取URl 设置超时时间 默认5秒
 $url 要访问的地址
-$type 访问类型 0 curl, 1 get ,2出现gzip情况 默认 0
+$type 访问类型 0 curl, 1 get , 2 curl压缩格式
 $time 超时时间 默认 5秒
  */
-function curl_get_contents($url,$type=0,$time=5) {
+function curl_get_contents($url,$type=0,$time=15) {
     if($type == 1){
         $ctx = stream_context_create(array(
                 'http' => array(
@@ -570,30 +573,26 @@ function curl_get_contents($url,$type=0,$time=5) {
             )
         );
         $data = file_get_contents($url, 0, $ctx);
-    }elseif($type == 2){
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $time); //设置超时时间
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); //是否抓取跳转后的页面
-        curl_setopt($ch, CURLOPT_ENCODING, "gzip,deflate");//处理页面压缩
-        $data = curl_exec($ch);
-        //报错信息
-        /* if (curl_errno($ch)) { echo 'Curl error: ' . curl_error($ch); }*/
-        curl_close($ch);
-    }else{
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $time); //设置超时时间
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); //是否抓取跳转后的页面
-        $data = curl_exec($ch);
-        //报错信息
-        /* if (curl_errno($ch)) { echo 'Curl error: ' . curl_error($ch); }*/
-        curl_close($ch);
+        return $data;
     }
+
+    $ip = array('220.138.60.40','183.60.15.173','120.43.72.20','112.110.20.11','140.50.112.58','128.110.90.23','140.28.100.40','120.58.60.74','200.57.20.114','89.110.11.2','10.57.112.2','10.58.112.3','113.10.21.5');
+    $rand = $ip[rand(0,count($ip)-1)];
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $time); //设置超时时间
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//如果请求成功返回结果，否则返回false
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//取消证书验证
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); //是否抓取跳转后的页面
+    if($type == 2){//处理页面压缩
+        curl_setopt($ch, CURLOPT_ENCODING, "gzip,deflate");
+    }else{
+        if($url)if(in_array('Content-Encoding: gzip',get_headers($url)))curl_setopt($ch, CURLOPT_ENCODING, "gzip,deflate");
+    }
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.47 Safari/536.11");//模拟浏览器
+    curl_setopt($ch, CURLOPT_HTTPHEADER , array("CLIENT-IP:{$rand}","X-FORWARDED-FOR:{$rand}"));//模拟ip
+    $data = curl_exec($ch);
+    curl_close($ch);
     return $data;
 }
 
