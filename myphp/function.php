@@ -80,6 +80,7 @@ function returnJson($data = array(), $call = '')
 function log_test($data,$file_name='log_test')
 {
     if(is_array($data))$data = var_export($data,true);
+    $file_name .= date('Ymd');
     $file=dirname(__FILE__)."/{$file_name}.log";
     $res=debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
     $log = "";
@@ -129,7 +130,8 @@ function curl_get($url,$time=15){
 
 /**
  * curl  post
- * @param $url
+ * @param string $url  请求地址
+ * @param array $param 参数
  * @param int $time  超时时间
  * @return mixed
  */
